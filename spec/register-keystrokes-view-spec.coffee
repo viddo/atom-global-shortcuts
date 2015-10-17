@@ -85,6 +85,13 @@ describe 'RegisterKeystrokesView', ->
     it 'informs to keep going', ->
       expect(@view.info.text()).toContain('almost there')
 
+  describe 'when blur view', ->
+    beforeEach ->
+      document.body.focus()
+
+    it 'destroys the panel', ->
+      expect(atom.workspace.getModalPanels()).toEqual []
+
   describe 'when cancelled', ->
     beforeEach ->
       @view.cancel()

@@ -10,6 +10,7 @@ class RegisterKeystrokesView extends View
   @content: ({commandName}) ->
     @div =>
       @div class: 'block', =>
+        @input class: 'inline-block global-shortcuts-input', outlet: 'input'
         @span class: 'inline-block icon icon-zap text-subtle', "Choose key combo for"
         @span class: 'inline-block', "#{_.humanizeEventName(commandName)}"
       @div class: 'block', =>
@@ -20,7 +21,6 @@ class RegisterKeystrokesView extends View
         @span class: 'inline-block text-highlight', outlet: 'info', "press the key combo you'd like as shortcut ☜(ﾟヮﾟ☜)"
 
   initialize: ({@commandName, @shortcuts}) ->
-    @keystrokes.focus()
     @sideEffects = []
     @panel = atom.workspace.addModalPanel(item: this)
 
@@ -72,6 +72,9 @@ class RegisterKeystrokesView extends View
     @sideEffects.push escapeStream.onValue =>
       @cancel()
 
+    @input.on 'blur', => @cancel()
+    @input.focus()
+
   setInfo: (str, className='') ->
     @info.text(" #{str}")
     @info.attr('class', "inline-block #{className}")
@@ -80,5 +83,6 @@ class RegisterKeystrokesView extends View
     @keystrokes.attr('class', "inline-block #{className}")
 
   cancel: ->
+    @input.off('blur')
     @sideEffects.forEach (unsub) -> unsub()
     @panel.destroy()
