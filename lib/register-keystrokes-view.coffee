@@ -30,7 +30,6 @@ class RegisterKeystrokesView extends View
 
     allKeystrokesStream = Bacon.mergeAll(matchStream, partiallyMatchStream, availableStream).map('.keystrokes')
       .skip(1) # skip first due to enter key from previous view being triggered otherwise
-    enterStream = allKeystrokesStream.filter(R.equals('enter'))
     escapeStream = allKeystrokesStream.filter(R.equals('escape'))
     keystrokesStream = allKeystrokesStream.filter (keystrokes) ->
       switch keystrokes 
@@ -38,19 +37,21 @@ class RegisterKeystrokesView extends View
         when 'escape' then false
         else true
 
-    registeredStream = keystrokesStream.map @shortcuts.isRegistered
-    incompleteStream = registeredStream.map (registered) -> registered is null
+    alreadyRegisteredProp = keystrokesStream.map(@shortcuts.isRegistered).toProperty(false)
+    incompleteProp = alreadyRegisteredProp.map(R.equals(null))
 
     rejectEnter = ({keystrokes}) -> keystrokes isnt 'enter'
     takenProp = Bacon.update false,
       [matchStream.filter(rejectEnter)], -> true
-      [availableStream.filter(rejectEnter), registeredStream.toProperty()], (..., registered) -> registered is true
+      [availableStream.filter(rejectEnter), alreadyRegisteredProp], (..., registered) -> registered is true
 
-    @sideEffects.push Bacon.onValues keystrokesStream, incompleteStream, takenProp,
-      (keystrokes, incomplete, taken) =>
+    validProp = Bacon.combineWith incompleteProp, takenProp, (incomplete, taken) -> !incomplete and !taken
+
+    @sideEffects.push Bacon.onValues keystrokesStream, validProp, incompleteProp, takenProp,
+      (keystrokes, valid, incomplete, taken) =>
         @keystrokes.text("#{_.humanizeKeystroke(keystrokes)}")
         switch
-          when !incomplete and !taken #OK, valid
+          when valid
             @setKeystrokesClass('highlight-success')
             @setInfo('OK! hit <ENTER> to save! ヽ(^。^)ノ', 'text-highlight')
           when incomplete
@@ -60,6 +61,7 @@ class RegisterKeystrokesView extends View
             @setKeystrokesClass('highlight-error')
             @setInfo("sorry, but it's already used… try another (╯°□°）╯︵ ┻━┻", 'text-warning')
 
+    enterStream = allKeystrokesStream.filter(R.equals('enter')).filter(validProp)
     @sideEffects.push keystrokesStream.sampledBy(enterStream).onValue (keystrokes) =>
       if @shortcuts.registerCommand(keystrokes, @commandName)
         @cancel()

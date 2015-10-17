@@ -74,6 +74,10 @@ describe 'RegisterKeystrokesView', ->
     it 'inform that it is taken', ->
       expect(@view.info.text()).toContain('sorry')
 
+    it 'disables enter', ->
+      @element.dispatchEvent buildKeydownEvent('enter', target: @element)
+      expect(@shortcuts.registerCommand).not.toHaveBeenCalled()
+
   describe 'when typing a keycombo (i.e. not done)', ->
     beforeEach ->
       @element.dispatchEvent buildKeydownEvent([], ctrl: true, target: @element)
