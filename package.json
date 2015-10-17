@@ -20,5 +20,8 @@
   },
   "devDependencies": {
     "coffeelint": "~1.13.0"
+  },
+  "scripts": {
+    "coffeelint": "./node_modules/.bin/coffeelint lib spec"
   }
 }
