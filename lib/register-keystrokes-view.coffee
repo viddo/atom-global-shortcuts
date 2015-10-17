@@ -45,7 +45,7 @@ class RegisterKeystrokesView extends View
       [matchStream.filter(rejectEnter)], -> true
       [availableStream.filter(rejectEnter), alreadyRegisteredProp], (..., registered) -> registered is true
 
-    validProp = Bacon.combineWith incompleteProp, takenProp, (incomplete, taken) -> !incomplete and !taken
+    validProp = Bacon.combineWith incompleteProp, takenProp, (incomplete, taken) -> not incomplete and not taken
 
     @sideEffects.push Bacon.onValues keystrokesStream, validProp, incompleteProp, takenProp,
       (keystrokes, valid, incomplete, taken) =>

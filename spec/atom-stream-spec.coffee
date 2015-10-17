@@ -4,7 +4,7 @@ describe 'atomStream', ->
   describe 'when setting does not have any initial value', ->
     beforeEach ->
       @spy = jasmine.createSpy('onValue')
-      atomStream(atom.config, 'observe', 'atom-stream-test.foobar').onValue(@spy);
+      atomStream(atom.config, 'observe', 'atom-stream-test.foobar').onValue(@spy)
 
       waitsFor =>
         @spy.calls.length is 1
@@ -31,7 +31,7 @@ describe 'atomStream', ->
     beforeEach ->
       atom.config.set('atom-stream-test.foobar', 123)
       @spy = jasmine.createSpy('onValue')
-      atomStream(atom.config, 'observe', 'atom-stream-test.foobar').onValue(@spy);
+      atomStream(atom.config, 'observe', 'atom-stream-test.foobar').onValue(@spy)
 
       waitsFor =>
         @spy.calls.length is 1

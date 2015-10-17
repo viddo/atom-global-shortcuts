@@ -17,5 +17,8 @@
     "ramda": "~0.17.1",
     "space-pen": "~5.1.1",
     "underscore-plus": "~1.6.6"
+  },
+  "devDependencies": {
+    "coffeelint": "~1.13.0"
   }
 }
