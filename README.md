@@ -1,4 +1,4 @@
-# Global Shortcuts for Atom
+# Global Shortcuts for Atom [![Build Status](https://travis-ci.org/viddo/atom-global-shortcuts.svg)](https://travis-ci.org/viddo/atom-global-shortcuts)
 
 Register global shortcuts for current Atom window.
 
