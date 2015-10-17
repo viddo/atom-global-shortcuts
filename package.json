@@ -2,8 +2,8 @@
   "name": "global-shortcuts",
   "main": "./lib/main",
   "version": "0.0.0",
-  "description": "Register global shortcuts for a Atom window process",
-  "repository": "",
+  "description": "Register global shortcuts for current Atom windows",
+  "repository": "https://github.com/viddo/atom-global-shortcuts",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.19 <2.0.0"
