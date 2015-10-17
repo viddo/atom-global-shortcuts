@@ -3,6 +3,7 @@ remote = require 'remote'
 Shortcuts = require './shortcuts'
 SelectCommandView = require './select-command-view'
 RegisterKeystrokesView = require './register-keystrokes-view'
+RegisteredCommandsView = require './registered-commands-view'
 
 globalShortcut = remote.require('global-shortcut')
 
@@ -19,6 +20,11 @@ module.exports =
           commandName: commandName
           shortcuts: @shortcuts
         })
+
+    @disposables.add atom.commands.add 'atom-workspace', 'global-shortcuts:registered-commands', =>
+      @view = new RegisteredCommandsView(@shortcuts)
+    @disposables.add atom.commands.add 'atom-workspace', 'global-shortcuts:unregister-command', =>
+      @view = new RegisteredCommandsView(@shortcuts)
 
     @disposables.add atom.commands.add 'atom-workspace', 'global-shortcuts:unregister-all', =>
       @shortcuts.unregisterAll()

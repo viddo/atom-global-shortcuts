@@ -66,6 +66,21 @@ describe 'Shortcuts', ->
         it 'triggers the command', ->
           expect(@commandSpy).toHaveBeenCalled()
 
+  describe '.unregister', ->
+    beforeEach ->
+      spyOn(globalShortcut, 'register').andReturn(true)
+      @shortcuts.registerCommand('shift-cmd-M', 'global-shortcuts:test')
+      expect(@shortcuts.registered.length).not.toEqual(0)
+
+      spyOn(globalShortcut, 'unregister')
+      @shortcuts.unregister(@shortcuts.registered[0])
+
+    it 'calls unregister with accelerator', ->
+      expect(globalShortcut.unregister).toHaveBeenCalledWith('shift+CmdOrCtrl+M')
+
+    it 'removes item from list', ->
+      expect(@shortcuts.registered.length).toEqual(0)
+
   describe '.unregisterAll', ->
     beforeEach ->
       spyOn(globalShortcut, 'unregisterAll')

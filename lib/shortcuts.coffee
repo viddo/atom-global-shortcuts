@@ -26,20 +26,23 @@ class Shortcuts
         commandName: commandName
         keystrokes: keystrokes
       )
-      atom.notifications.addSuccess "Global shortcut set for command!", {
-        detail: """
-          #{_.humanizeKeystroke(keystrokes)} will trigger #{commandName}!
-          Remove shortcuts using global-shortcuts:unregister-all command
-        """
+      atom.notifications.addSuccess "global-shortcuts: Registered command!", {
+        detail: "#{_.humanizeKeystroke(keystrokes)} will trigger #{commandName}!"
       }
     else
       console.warn "global-shortcuts: Could not register #{accelerator} as global shortcut (keystrokes: #{keystrokes})"
 
     return didRegister
 
+  unregister: (item) ->
+    @registered.splice(@registered.indexOf(item), 1)
+    @globalShortcut.unregister(@accelerator(item.keystrokes))
+    atom.notifications.addSuccess "global-shortcuts: Unregistered #{item.keystrokes}!"
+
   unregisterAll: ->
     @globalShortcut.unregisterAll()
     @registered = []
+    atom.notifications.addSuccess "global-shortcuts: Unregistered all!"
 
   dispose: ->
     @unregisterAll()
