@@ -31,6 +31,7 @@ describe 'Shortcuts', ->
 
     describe 'when given invalid input', ->
       beforeEach ->
+        spyOn(console, 'warn')
         spyOn(globalShortcut, 'register').andCallFake -> throw new Error()
         @result = @shortcuts.registerCommand('cmd-z', 'global-shortcuts:test')
 
@@ -39,6 +40,11 @@ describe 'Shortcuts', ->
 
       it 'result is false', ->
         expect(@result).toBe(false)
+
+      it 'result is false', ->
+        expect(console.warn).toHaveBeenCalled()
+        expect(console.warn.calls[0].args[0]).toContain('CmdOrCtrl+z')
+        expect(console.warn.calls[0].args[0]).toContain('cmd-z')
 
     describe 'when given valid input', ->
       beforeEach ->

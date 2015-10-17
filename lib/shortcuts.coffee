@@ -13,9 +13,10 @@ class Shortcuts
       null #aka don't know
 
   registerCommand: (keystrokes, commandName) ->
+    accelerator = @accelerator(keystrokes)
     didRegister =
       try
-        @globalShortcut.register @accelerator(keystrokes), ->
+        @globalShortcut.register accelerator, ->
           atom.commands.dispatch(atom.views.getView(atom.workspace), commandName)
       catch
         false
@@ -31,6 +32,8 @@ class Shortcuts
           Remove shortcuts using global-shortcuts:unregister-all command
         """
       }
+    else
+      console.warn "global-shortcuts: Could not register #{accelerator} as global shortcut (keystrokes: #{keystrokes})"
 
     return didRegister
 
