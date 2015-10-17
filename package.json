@@ -1,7 +1,7 @@
 {
   "name": "global-shortcuts",
   "main": "./lib/main",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Register global shortcuts for a Atom window process",
   "repository": "",
   "license": "MIT",
