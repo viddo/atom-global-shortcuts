@@ -6,7 +6,7 @@
   "repository": "https://github.com/viddo/atom-global-shortcuts",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.0.19 <2.0.0"
+    "atom": ">=1.13.1 <2.0.0"
   },
   "activationCommands": {
     "atom-workspace": "global-shortcuts:register-command"
