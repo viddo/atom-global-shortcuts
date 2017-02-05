@@ -5,12 +5,10 @@ SelectCommandView = require './select-command-view'
 RegisterKeystrokesView = require './register-keystrokes-view'
 RegisteredCommandsView = require './registered-commands-view'
 
-globalShortcut = remote.require('global-shortcut')
-
 module.exports =
 
   activate: (state) ->
-    @shortcuts = new Shortcuts(globalShortcut)
+    @shortcuts = new Shortcuts(remote.globalShortcut)
     @disposables = new CompositeDisposable
     @disposables.add @shortcuts
 

@@ -1,16 +1,13 @@
 remote = require 'remote'
 SelectCommandView = require '../lib/select-command-view'
 RegisterKeystrokesView = require '../lib/register-keystrokes-view'
-buildKeydownEvent = require './build-keydown-event'
-
-globalShortcut = remote.require('global-shortcut')
 
 # Includes integration test for the general happy case, to make sure things works when put together
 # Details should be tested in individual objects
 describe 'global-shortcuts', ->
 
   beforeEach ->
-    spyOn(globalShortcut, 'register').andReturn(true)
+    spyOn(remote.globalShortcut, 'register').andReturn(true)
     spyOn(console, 'error')
     @workspaceElement = atom.views.getView(atom.workspace)
     jasmine.attachToDOM(@workspaceElement)
@@ -61,19 +58,19 @@ describe 'global-shortcuts', ->
 
       describe 'when pressed a valid key combo and finally press enter', ->
         beforeEach ->
-          expect(globalShortcut.register).not.toHaveBeenCalled()
+          expect(remote.globalShortcut.register).not.toHaveBeenCalled()
           spyOn(atom.notifications, 'addSuccess')
 
           element = atom.workspace.getModalPanels()[0].getItem()[0]
-          element.dispatchEvent buildKeydownEvent('alt', target: element)
-          element.dispatchEvent buildKeydownEvent('shift', alt: true, target: element)
-          element.dispatchEvent buildKeydownEvent('space', alt: true, shift: true, target: element)
-          element.dispatchEvent buildKeydownEvent('enter', target: element)
+          element.dispatchEvent atom.keymaps.constructor.buildKeydownEvent('alt', target: element)
+          element.dispatchEvent atom.keymaps.constructor.buildKeydownEvent('shift', alt: true, target: element)
+          element.dispatchEvent atom.keymaps.constructor.buildKeydownEvent('space', alt: true, shift: true, target: element)
+          element.dispatchEvent atom.keymaps.constructor.buildKeydownEvent('enter', target: element)
 
         it 'registers the global shortcut', ->
-          expect(globalShortcut.register).toHaveBeenCalled()
-          expect(typeof globalShortcut.register.calls[0].args[0]).toEqual('string')
-          expect(typeof globalShortcut.register.calls[0].args[1]).toEqual('function')
+          expect(remote.globalShortcut.register).toHaveBeenCalled()
+          expect(typeof remote.globalShortcut.register.calls[0].args[0]).toEqual('string')
+          expect(typeof remote.globalShortcut.register.calls[0].args[1]).toEqual('function')
 
         it 'shows a success notification', ->
           expect(atom.notifications.addSuccess).toHaveBeenCalled()
@@ -85,7 +82,7 @@ describe 'global-shortcuts', ->
         describe 'when registered keycombo is triggered', ->
           beforeEach ->
             spyOn(atom, 'show')
-            globalShortcut.register.calls[0].args[1]()
+            remote.globalShortcut.register.calls[0].args[1]()
 
           it 'should call registered command', ->
             expect(atom.show).toHaveBeenCalled()

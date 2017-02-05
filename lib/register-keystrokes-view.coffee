@@ -28,14 +28,18 @@ class RegisterKeystrokesView extends View
     partiallyMatchStream = atomStream(atom.keymaps, 'onDidPartiallyMatchBindings')
     availableStream = atomStream(atom.keymaps, 'onDidFailToMatchBinding')
 
-    allKeystrokesStream = Bacon.mergeAll(matchStream, partiallyMatchStream, availableStream).map('.keystrokes')
+    allKeystrokesStream = Bacon
+      .mergeAll(matchStream, partiallyMatchStream, availableStream)
+      .map('.keystrokes')
       .skip(1) # skip first due to enter key from previous view being triggered otherwise
+
     escapeStream = allKeystrokesStream.filter(R.equals('escape'))
     keystrokesStream = allKeystrokesStream.filter (keystrokes) ->
       switch keystrokes 
         when 'enter' then false
         when 'escape' then false
-        else true
+        else
+          not keystrokes.startsWith('^') # e.g. ^x, which indicates a keyup keystroke which we're not interested in
 
     alreadyRegisteredProp = keystrokesStream.map(@shortcuts.isRegistered).toProperty(false)
     incompleteProp = alreadyRegisteredProp.map(R.equals(null))
