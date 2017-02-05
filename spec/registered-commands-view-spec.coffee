@@ -2,14 +2,12 @@ remote = require 'remote'
 Shortcuts = require '../lib/shortcuts'
 RegisteredCommandsView = require '../lib/registered-commands-view'
 
-globalShortcut = remote.require('global-shortcut')
-
 describe 'RegisteredCommandsView', ->
   beforeEach ->
     @workspaceElement = atom.views.getView(atom.workspace)
     jasmine.attachToDOM(@workspaceElement)
 
-    @shortcuts = new Shortcuts(globalShortcut)
+    @shortcuts = new Shortcuts(remote.globalShortcut)
 
   describe 'when there are no shortcuts registered', ->
     beforeEach ->

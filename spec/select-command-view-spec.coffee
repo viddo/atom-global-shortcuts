@@ -28,7 +28,7 @@ describe 'SelectCommandView', ->
 
     it 'calls the confirm callback with the selected command', ->
       expect(@confirmSpy).toHaveBeenCalled()
-      expect(@confirmSpy).toHaveBeenCalledWith('pane:show-next-item')
+      expect(@confirmSpy).toHaveBeenCalledWith('pane:show-next-recently-used-item')
 
     it 'cancels the view', ->
       expect(@view.isVisible()).toBe(false)

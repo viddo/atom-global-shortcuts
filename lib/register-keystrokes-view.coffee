@@ -1,6 +1,5 @@
 {View} = require 'space-pen'
 _ = require 'underscore-plus'
-R = require 'ramda'
 Bacon = require 'baconjs'
 atomStream = require './atom-stream'
 
@@ -28,17 +27,21 @@ class RegisterKeystrokesView extends View
     partiallyMatchStream = atomStream(atom.keymaps, 'onDidPartiallyMatchBindings')
     availableStream = atomStream(atom.keymaps, 'onDidFailToMatchBinding')
 
-    allKeystrokesStream = Bacon.mergeAll(matchStream, partiallyMatchStream, availableStream).map('.keystrokes')
+    allKeystrokesStream = Bacon
+      .mergeAll(matchStream, partiallyMatchStream, availableStream)
+      .map('.keystrokes')
       .skip(1) # skip first due to enter key from previous view being triggered otherwise
-    escapeStream = allKeystrokesStream.filter(R.equals('escape'))
+
+    escapeStream = allKeystrokesStream.filter((keystrokes) -> keystrokes is 'escape')
     keystrokesStream = allKeystrokesStream.filter (keystrokes) ->
       switch keystrokes 
         when 'enter' then false
         when 'escape' then false
-        else true
+        else
+          not keystrokes.startsWith('^') # e.g. ^x, which indicates a keyup keystroke which we're not interested in
 
     alreadyRegisteredProp = keystrokesStream.map(@shortcuts.isRegistered).toProperty(false)
-    incompleteProp = alreadyRegisteredProp.map(R.equals(null))
+    incompleteProp = alreadyRegisteredProp.map((keystrokes) -> keystrokes is null)
 
     rejectEnter = ({keystrokes}) -> keystrokes isnt 'enter'
     takenProp = Bacon.update false,
@@ -61,7 +64,7 @@ class RegisterKeystrokesView extends View
             @setKeystrokesClass('highlight-error')
             @setInfo("sorry, but it's already used… try another (╯°□°）╯︵ ┻━┻", 'text-warning')
 
-    enterStream = allKeystrokesStream.filter(R.equals('enter')).filter(validProp)
+    enterStream = allKeystrokesStream.filter((keystrokes) -> keystrokes is 'enter').filter(validProp)
     @sideEffects.push keystrokesStream.sampledBy(enterStream).onValue (keystrokes) =>
       if @shortcuts.registerCommand(keystrokes, @commandName)
         @cancel()

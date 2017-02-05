@@ -6,20 +6,19 @@
   "repository": "https://github.com/viddo/atom-global-shortcuts",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.0.19 <2.0.0"
+    "atom": ">=1.13.1 <2.0.0"
   },
   "activationCommands": {
     "atom-workspace": "global-shortcuts:register-command"
   },
   "dependencies": {
-    "atom-space-pen-views": "~2.1.0",
-    "baconjs": "~0.7.75",
-    "ramda": "~0.17.1",
-    "space-pen": "~5.1.1",
-    "underscore-plus": "~1.6.6"
+    "atom-space-pen-views": "2.2.0",
+    "baconjs": "0.7.89",
+    "space-pen": "5.1.2",
+    "underscore-plus": "1.6.6"
   },
   "devDependencies": {
-    "coffeelint": "~1.13.0"
+    "coffeelint": "1.16.0"
   },
   "scripts": {
     "coffeelint": "./node_modules/.bin/coffeelint lib spec"
